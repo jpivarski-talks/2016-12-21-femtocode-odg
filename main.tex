@@ -112,14 +112,61 @@
 \end{frame}
 
 \begin{frame}{But it's more than that\ldots}
+\vspace{0.5 cm}
 \begin{columns}
-\column{0.5\linewidth}
+\column{0.4\linewidth}
+\includegraphics[width=\linewidth]{books.png}
 
-\column{0.5\linewidth}
-\includegraphics[width=\linewidth]{hennessy.jpg}
+\column{0.55\linewidth}
+\textcolor{darkblue}{Gotcha:} many of these hurdles are invisible!
 
+\vspace{0.5 cm}
+Since the 1990's, improvements in processor speed have outpaced improvements in memory bandwidth, so now memory is the bottleneck.
+
+\vspace{0.5 cm}
+Also, slow operations are pipelined to optimize throughput: many clock ticks from start to finish, but a full pipeline can push through one operation per clock tick.
+
+\vspace{0.5 cm}
+``Bubbles'' in the pipe thwart this.
 \end{columns}
 \end{frame}
+
+\begin{frame}[fragile]{Fast code looks like this}
+\begin{center}
+\begin{minipage}{0.7\linewidth}
+\begin{minted}[frame=single]{c++}
+for (int i = 0;  i < size;  i++)
+  out[i] = in1[i] / in2[i];
+\end{minted}
+\end{minipage}
+\end{center}
+
+\begin{itemize}
+\item Simple loop structure that the compiler can unfold.
+\item Forward stride that the CPU can detect and prefetch memory. (Arrays are contiguous in memory: bonus points for proper memory-alignment.)
+\item Bubble-free pipeline (except at start and end; edge effects).
+\item Would allow SIMD parallelism that could be vectorized (1024 at a time in a GPU, 4 or 8 for MMX, 256 for KNL\ldots).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Field is ripe with low-hanging fruit}
+\vspace{0.5 cm}
+\textcolor{darkblue}{I've estimated that our weeks-long physics jobs, which touch hundreds of terabytes, could be reduced to minutes or seconds.}
+\begin{itemize}
+\item Only need to touch $\sim$80~GB of {\it columnar} data in typical 100 million event example.
+\item {\it Single} processor can load 80~GB data arrays in 20 minutes \\ (so divide by $N$, number of processors).
+\item Optimized C code can perform one simple operation in 12 seconds. (Divide by $N$.)
+\item Low-end GPU can perform the same operation in 5 seconds. (Divide by $N$.)
+\end{itemize}
+
+\vspace{0.5 cm}
+\small
+\textcolor{gray}{Actually a change in behavior: ``weeks'' are spent making private skims to perform these operations quickly offline. But a shared server with sufficient caching would allow users to calculate one plot at a time, reducing the amount of data that needs to be read/copied.}
+\end{frame}
+
+
+
+
 
 
 %% \begin{frame}{Two ways to more incisive data analysis}
