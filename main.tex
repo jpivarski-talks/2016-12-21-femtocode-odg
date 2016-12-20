@@ -180,7 +180,7 @@ for (int i = 0;  i < huge_number;  i++)
 \item ROOT \textcolor{gray}{(physics, since 90's, unacknowledged in Google paper!)}
 \end{itemize}
 
-\item Modern SQL engines are actually executing code on the raw columns, rather than reconstructing records.
+\item Modern SQL engines actually execute code on the raw columns, rather than reconstructing records.
 \end{itemize}
 
 \vspace{-5 cm}
@@ -365,7 +365,7 @@ where all of the above are implicit loops over arrays ({\tt @5} has one entry pe
 \textcolor{darkblue}{\underline{Different}}
 
 \begin{itemize}
-\item Total functional and fully vectorizable.
+\item Total-functional and fully vectorizable.
 
 \item Complete lack of runtime errors. \textcolor{gray}{\small (I started thinking about this while standardizing PFA: total functions are easier for guaranteeing conformance.)}
 
@@ -395,7 +395,7 @@ where all of the above are implicit loops over arrays ({\tt @5} has one entry pe
 \textcolor{darkblue}{\underline{Possible}}
 
 \begin{itemize}
-\item Java kernels on direct buffers. \textcolor{gray}{(No reason why a pure Java for loop on contiguous, off-heap data would be any \mbox{slower than C.)\hspace{-1 cm}}}
+\item Java kernels on direct buffers. \textcolor{gray}{(No reason why a \mbox{pure Java ``for''\hspace{-0.5 cm}} \mbox{loop on contiguous,} off-heap data would be any \mbox{slower than C.)\hspace{-1 cm}}}
 \item Execution engines for Spark DataFrames, Ibis, Impala, Kudu, Dremel, and the rest.
 \end{itemize}
 \end{frame}
@@ -474,7 +474,7 @@ record(
 \small
 
 \vspace{0.25 cm}
-Operations can be performed on arrays at the same level of nesting without reference to their {\tt @size} arrays.
+Operations on arrays at the same level of nesting can be performed without reference to their {\tt @size} arrays.
 
 \vspace{0.25 cm}
 \textcolor{darkblue}{\normalsize \underline{C99 for CPUs}:}
@@ -521,7 +521,7 @@ The {\tt values} vector has a different length than {\tt bias} and must be inter
 \begin{minted}{python}
 def explode(modeldepth, modelsize, data, out):
     "Explode `data` to `out` with new size array `modelsize`."
-    countdown = [None] * modeldepth
+    countdown = [None] * modeldepth      # a stack (avoid recursion)
     cdi = 0; datai = 0; outi = 0
     for ms in modelsize:
         countdown[cdi] = ms
@@ -894,7 +894,7 @@ Check line:col 1:5 (pos 5):
 
 \begin{frame}{Logical inference}
 \vspace{0.25 cm}
-Perhaps this looks like a formal proof system or a computer algebra system. In a way, every type-checker is (Curry-Howard correspondence).
+Perhaps this is looking more like a formal proof system or a computer algebra system. \textcolor{gray}{(In a way, every type-checker is because of Curry-Howard correspondence.)}
 
 \vspace{0.25 cm}
 \textcolor{darkblue}{Femtocode has just enough type system granularity to eliminate runtime errors:}
@@ -1030,9 +1030,9 @@ After all assignments have been expanded, anonymous functions and function names
 \small
 \begin{minted}{python}
 def goodEta(t): abs(t.eta) < 2.4;
-tracks.filter(goodEta)
-      .maxBy(t => t.hits.size)
-      .map($1.pt)
+tracks.filter(goodEta)              # reference
+      .maxBy(t => t.hits.size)      # long form
+      .map($1.pt)                   # short form
 \end{minted}
 \end{minipage}
 \end{center}
@@ -1068,7 +1068,7 @@ goodEta = cutEta(2.4);
 because these constructs are expanded before any types are checked. It gives the user the feeling of freedom when working with functions when they are actually constrained.
 
 \vspace{0.5 cm}
-The only aspect of first-class functions that the user might miss is the ability to pick a function to call at runtime.
+The only aspect of first-class functions that the user might miss is the ability to select a function to call at runtime.
 \end{frame}
 
 \begin{frame}[fragile]{Why does this matter?}
